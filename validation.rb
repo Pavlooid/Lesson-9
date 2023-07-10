@@ -15,7 +15,13 @@ module Validation
 
   module InstanceMethods
     def validate!
-      self.class.validations.each do |validation|
+      if self.class.superclass == Object
+        thisclass = self.class
+      else
+        thisclass = self.class.superclass
+      end
+
+      thisclass.validations.each do |validation|
         validation.each do |type, args|
           variable = instance_variable_get("@#{args[:name]}")
           send(type, variable, args[:params])
